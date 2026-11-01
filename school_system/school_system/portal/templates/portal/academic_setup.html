@@ -1,0 +1,140 @@
+{% extends 'portal/base.html' %}
+
+{% block content %}
+<div class="container my-4">
+
+    <!-- 1. Top Card: Set Active Term -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <h4 class="card-title fw-bold mb-0">Set Active Term</h4>
+                <span class="badge bg-info text-light fs-7">
+                    Currently: Term {% if config %}{{ config.current_term }}{% else %}1{% endif %}
+                </span>
+            </div>
+            
+            <form method="POST" action="{% url 'academic_setup' %}" class="row align-items-center g-3">
+                {% csrf_token %}
+                <div class="col-auto">
+                    <label for="term_select" class="col-form-label fw-semibold">Select Academic Term:</label>
+                </div>
+                <div class="col-auto">
+                    <select name="term" id="term_select" class="form-select">
+                        <option value="1" {% if config and config.current_term == 1 %}selected{% endif %}>Term 1</option>
+                        <option value="2" {% if config and config.current_term == 2 %}selected{% endif %}>Term 2</option>
+                        <option value="3" {% if config and config.current_term == 3 %}selected{% endif %}>Term 3</option>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" name="set_term" class="btn btn-primary">Set Active Term</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. Adjacent Cards Row: Manage Classes & Manage Subjects -->
+    <div class="row g-4">
+        
+        <!-- Left Column: Manage Classes -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold mb-3">Manage Classes</h5>
+                    
+                    <!-- Add Class Form -->
+                    <form method="POST" action="{% url 'academic_setup' %}" class="row g-2 mb-4">
+                        {% csrf_token %}
+                        <div class="col">
+                            <input type="text" name="class_name" class="form-control" placeholder="e.g. Form 1" required>
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" name="add_class" class="btn btn-primary">Add Class</button>
+                        </div>
+                    </form>
+
+                    <!-- Classes Table -->
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>CLASS NAME</th>
+                                    <th class="text-end">ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for cls in classes %}
+                                <tr>
+                                    <td class="fw-semibold">{{ cls.class_name }}</td>
+                                    <td class="text-end">
+                                        <form method="POST" action="{% url 'academic_setup' %}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete {{ cls.class_name }}?');">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="class_id" value="{{ cls.id }}">
+                                            <button type="submit" name="delete_class" class="btn btn-danger btn-sm">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="2" class="text-center text-muted py-3">No classes added yet.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Manage Subjects -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold mb-3">Manage Subjects</h5>
+                    
+                    <!-- Add Subject Form -->
+                    <form method="POST" action="{% url 'academic_setup' %}" class="row g-2 mb-4">
+                        {% csrf_token %}
+                        <div class="col">
+                            <input type="text" name="subject_name" class="form-control" placeholder="e.g. Mathematics, Physics" required>
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" name="add_subject" class="btn btn-primary">Add Subject</button>
+                        </div>
+                    </form>
+
+                    <!-- Subjects Table -->
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>SUBJECT NAME</th>
+                                    <th class="text-end">ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for subj in subjects %}
+                                <tr>
+                                    <td class="fw-semibold">{{ subj.subject_name }}</td>
+                                    <td class="text-end">
+                                        <form method="POST" action="{% url 'academic_setup' %}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete {{ subj.subject_name }}?');">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="subject_id" value="{{ subj.id }}">
+                                            <button type="submit" name="delete_subject" class="btn btn-danger btn-sm">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="2" class="text-center text-muted py-3">No subjects added yet.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

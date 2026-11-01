@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Teacher Dashboard</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; color: #333; margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; background: #ffffff; padding: 15px 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .card { background: #ffffff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .form-group { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        select { padding: 8px 12px; border: 1px solid #cccccc; border-radius: 5px; font-size: 14px; min-width: 180px; }
+        .table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .table th, .table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        .table th { background-color: #f8fafc; color: #4a5568; font-weight: 600; }
+        .btn { padding: 8px 16px; border-radius: 5px; text-decoration: none; font-size: 14px; font-weight: 500; display: inline-block; border: none; cursor: pointer; }
+        .btn-primary { background-color: #2563eb; color: white; }
+        .btn-sm { padding: 5px 10px; font-size: 12px; }
+        .btn-logout { color: #dc2626; text-decoration: none; font-weight: 600; }
+        .badge-locked { color: #dc2626; font-size: 12px; font-weight: 600; }
+    </style>  
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h2 style="margin: 0; color: #1e293b;">Teacher Grade Portal</h2>
+        <div>
+            Logged in as : <strong>{{request.user.username}}</strong>|
+            <form action="{% url 'logout'%}" method="POST" style="display: inline;">
+                {% csrf_token%}
+                <button type="submit" class="btn-logout" style="background: none; border: none; padding: 0; cursor: pointer;">Logout</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Selection Card -->
+    <div class="card">
+        <form method="GET" class="form-group">
+            <div>
+                <label><strong>Select Class:</strong></label><br>
+                <select name="class_id" onchange="this.form.submit()">
+                    <option value="">-- Select Class --</option>
+                    {% for school_class in assigned_classes %}
+                        <option value="{{ school_class.id }}" {% if selected_class and selected_class.id == school_class.id %}selected{% endif %}>
+                            {{ school_class.class_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            {% if selected_class %}
+            <div>
+                <label><strong>Select Subject:</strong></label><br>
+                <select name="subject_id" onchange="this.form.submit()">
+                    <option value="">-- Select Subject --</option>
+                    {% for subject in available_subjects %}
+                        <option value="{{ subject.id }}" {% if selected_subject and selected_subject.id == subject.id %}selected{% endif %}>
+                            {{ subject.subject_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- Students Table -->
+    {% if selected_class and selected_subject %}
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 15px;">
+            <h3 style="margin: 0; color: #1e3a8a;">{{ selected_class.class_name }} - {{ selected_subject.subject_name }}</h3>
+            <a href="{% url 'grade_entry' selected_class.id selected_subject.id %}" class="btn btn-primary">Enter / Edit All Grades &rarr;</a>
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Admission No</th>
+                    <th>Student Name</th>
+                    <th>Current Grade</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ student.admission_number }}</td>
+                    <td><strong>{{ student.first_name }} {{ student.last_name }}</strong></td>
+                    <td>
+                        {{ student.current_grade }}
+                        {% if student.is_locked %}
+                            <span class="badge-locked">(Locked)</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'grade_entry' selected_class.id selected_subject.id %}?student_id={{ student.id }}" class="btn btn-primary btn-sm">Enter Grade</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" style="text-align: center; color: #64748b;">No students found in this class.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</div>
+
+</body>
+</html>

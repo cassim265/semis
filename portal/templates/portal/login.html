@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Portal - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --bg-main: #f5f6fa;
+            --card-bg: #ffffff;
+            --text-main: #2d3436;
+            --border-color: #f1f2f6;
+            --radius-lg: 16px;
+        }
+
+        * { box-sizing: border-box; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
+        body { background-color: var(--bg-main); color: var(--text-main); display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+
+        .login-card { background: var(--card-bg); border-radius: var(--radius-lg); padding: 40px; width: 100%; max-width: 420px; border: 1px solid var(--border-color); box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .logo { font-size: 24px; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 10px; margin-bottom: 25px; justify-content: center; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--text-main); }
+        .input-wrapper { display: flex; align-items: center; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; padding: 0 12px; }
+        .input-wrapper i { color: #a4b0be; }
+        .input-wrapper input { border: none; background: transparent; padding: 12px; width: 100%; outline: none; font-size: 14px; }
+
+        .btn-login { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; transition: background 0.2s; margin-top: 10px; }
+        .btn-login:hover { background: #5b4cc4; }
+
+        .alert-error { background: #ffeaa7; color: #d63031; padding: 12px; border-radius: 8px; font-size: 13px; margin-bottom: 20px; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+<div class="login-card">
+    <div class="logo">
+        <i class="fa-solid fa-graduation-cap"></i> Portal Login
+    </div>
+
+    {% if form.errors %}
+        <div class="alert-error">
+            <i class="fa-solid fa-triangle-exclamation"></i> Invalid username or password.
+        </div>
+    {% endif %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="Alert{% if message.tags == 'error' %}alert-danger{% else %}alert-info{% endif %}" style="padding: 10px; margin-bottom: 15px; border-radius: 5px;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>Username</label>
+            <div class="input-wrapper">
+                <i class="fa-solid fa-user"></i>
+                <input type="text" name="username" required placeholder="Enter your username">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Password</label>
+            <div class="input-wrapper">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" name="password" required placeholder="Enter your password">
+            </div>
+        </div>
+
+        <button type="submit" class="btn-login">Sign In</button>
+    </form>
+</div>
+
+</body>
+</html>
+

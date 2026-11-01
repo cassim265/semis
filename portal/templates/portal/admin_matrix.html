@@ -1,0 +1,151 @@
+{% extends 'portal/base.html' %}
+
+{% block content %}
+<div class="container-fluid my-4 px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold">Admin Overview - Statistics</h3>
+        <div>
+            <a href="{% url 'academic_setup' %}" class="btn btn-outline-primary btn-sm me-2">Academic Rollover Setup</a>
+            <a href="{% url 'add_student' %}" class="btn btn-outline-primary btn-sm me-2">Student Directory</a>
+            <a href="{% url 'assign_teacher' %}" class="btn btn-outline-primary btn-sm">+ Assign Teacher</a>
+        </div>
+    </div>
+
+    <!-- Top Summary KPI Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-start border-primary border-4 p-3">
+                <span class="text-muted small fw-bold">TOTAL STUDENTS</span>
+                <h3 class="fw-bold text-primary mb-0">{{ total_students }}</h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-start border-success border-4 p-3">
+                <span class="text-muted small fw-bold">TEACHING STAFF</span>
+                <h3 class="fw-bold text-success mb-0">{{ total_teachers }}</h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-start border-info border-4 p-3">
+                <span class="text-muted small fw-bold">ACTIVE SESSION</span>
+                <h5 class="fw-bold text-info mb-0 mt-1">
+                    {% if active_config %}
+                        Term {{ active_config.current_term }} ({{ active_config.academic_year }})
+                    {% else %}
+                        Not Set
+                    {% endif %}
+                </h5>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-start border-warning border-4 p-3">
+                <span class="text-muted small fw-bold">SUBJECTS OFFERED</span>
+                <h3 class="fw-bold text-warning mb-0">{{ total_subjects }}</h3>
+            </div>
+        </div>
+    </div>
+    <!-- Teacher Marks Submission Status Card -->
+    <div class="card shadow-sm p-3 mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold mb-0">Teacher Grade Submission Status</h5>
+            <span class="badge bg-info text-light">
+                Term {% if active_config %}{{ active_config.current_term }}{% else %}1{% endif %}
+            </span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Teacher Name</th>
+                        <th>Subject</th>
+                        <th>Class</th>
+                        <th class="text-center">Submission Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in teacher_submission_status %}
+                    <tr>
+                        <td class="fw-semibold">{{ item.teacher_name }}</td>
+                        <td>{{ item.subject_name }}</td>
+                        <td>{{ item.class_name }}</td>
+                        <td class="text-center">
+                            {% if item.is_submitted %}
+                                <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill fw-bold">
+                                    ✓ Submitted
+                                </span>
+                            {% else %}
+                                <span class="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill fw-bold">
+                                    ⏳ Pending
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-3">
+                            No teacher assignments found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <!-- Class Selector Dropdown Form -->
+    <div class="card shadow-sm p-3 mb-4">
+        <form method="GET" action="{% url 'admin_matrix' %}" class="d-flex align-items-center gap-3">
+            <label for="class_id" class="fw-bold mb-0">Select Class:</label>
+            <select name="class_id" id="class_id" class="form-select form-select-sm border-start-0" onchange="this.form.submit()">
+                {% for cls in classes %}
+                    <option value="{{ cls.id }}" {% if selected_class and selected_class.id == cls.id %}selected{% endif %}>
+                        {{ cls.class_name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+
+    <!-- Grades Matrix Table -->
+    <div class="card shadow-sm p-3">
+        <h5 class="fw-bold mb-3">
+            Grades for {% if selected_class %}{{ selected_class.class_name }}{% else %}Selected Class{% endif %}
+        </h5>
+        
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th style="min-width: 180px;">Student Name</th>
+                        {% for subj in all_subjects %}
+                            <th class="text-center">{{ subj.subject_name }}</th>
+                        {% endfor %}
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in student_matrix %}
+                    <tr>
+                        <td class="fw-bold">{{ row.student.first_name }} {{ row.student.last_name }}</td>
+                        {% for item in row.scores %}
+                            <td class="text-center">{{ item.score }}</td>
+                        {% endfor %}
+                        <td class="text-center">
+                            <a href="{% url 'student_report_card' row.student.id %}" class="btn btn-sm btn-outline-info">Report Card</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="{{ all_subjects|length|add:2 }}" class="text-center text-muted py-4">
+                            No students or grades recorded for this class yet.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

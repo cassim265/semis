@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}School Management Portal{% endblock %}</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css'%}">
+    <style>
+        body {
+            background-color: #f8fafc;
+            color: #334155;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .card {
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<body>
+
+    <!-- Main Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary px-3 sticky-top shadow-sm">
+        <div class="container-fluid d-flex align-items-center justify-content-between">
+            
+            <!-- Left Side: Brand & Main Navigation Links -->
+            <div class="d-flex align-items-center">
+                <a class="navbar-brand fw-bold me-4" href="{% url 'admin_matrix' %}">School Portal</a>
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'admin_matrix' %}">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'academic_setup' %}">Academic Setup</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'add_student' %}">Add Student</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'promote_students' %}">Rollover</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Far Right Side: Isolated User Profile & Logout Box -->
+            <div class="d-flex align-items-center  bg-opacity-10 border border-grey border-opacity-25 rounded-3 px-3 py-1 ms-auto">
+                <span class="text-white small me-3">
+                    Logged in as: <strong class="text-warning">{{ request.user.username }}</strong>
+                </span>
+                <form method="POST" action="{% url 'logout' %}" class="d-inline m-0">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-light btn-sm fw-semibold">Logout</button>
+                </form>
+            </div>
+
+        </div>
+    </nav>
+
+
+    <!-- Main Container -->
+    <div class="container mb-5">
+        
+        <!-- Flash Messages (Success, Errors, Warnings) -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Dynamic Content Block -->
+        {% block content %}
+        {% endblock %}
+
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

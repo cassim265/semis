@@ -1,0 +1,134 @@
+{% extends 'portal/base.html' %}
+
+{% block content %}
+<div class="container my-4">
+
+    <!-- Top Navigation Link -->
+
+
+    <!-- Main Grid Row -->
+    <div class="row g-4">
+
+        <!-- Left Column: Student Directory & Search/Filter -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm h-100">
+                <h4 class="card-title fw-bold text-primary mb-0">Student Directory</h4>
+                <div class="card-body">
+                    <!-- Header & Search Bar Bar Controls -->
+                        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+                            
+
+                            <!-- Unified Search & Filter Input Group -->
+                            <form method="GET" action="{% url 'add_student' %}" class="d-flex flex-wrap flex-md-nowrap gap-2 w-100 w-md-auto">
+                                
+                                <!-- Styled Class Filter Dropdown -->
+                                <div class="input-group input-group-sm style-select">
+                                    <span class="input-group-text bg-light text-secondary border-end-0">
+                                        <i class="bi bi-funnel"></i> Class
+                                    </span>
+                                    <select name="class_filter" class="form-select form-select-sm border-start-0" onchange="this.form.submit()">
+                                        <option value="">All Classes</option>
+                                        {% for cls in classes %}
+                                            <option value="{{ cls.id }}">{{ cls.class_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <!-- Styled Search Input & Action Button -->
+                                <div class="input-group input-group-sm">
+                                    <input type="text" name="search" value="{{ search_query }}" class="form-control" placeholder="Search by name or admission no...">
+                                    <button type="submit" class="btn btn-primary fw-semibold px-3">
+                                        Search
+                                    </button>
+                                </div>
+
+                            </form>
+                        </div>
+
+                    <!-- Directory Table -->
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ADMISSION NO</th>
+                                    <th>STUDENT NAME</th>
+                                    <th>CLASS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student in students %}
+                                <tr>
+                                    <td class="fw-bold">{{ student.admission_no }}</td>
+                                    <td>{{ student.first_name }} {{ student.last_name }}</td>
+                                    <td>
+                                        <span class="badge bg-info text-light">
+                                            {{ student.school_class.class_name }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted py-4">
+                                        No students found.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Add New Student Form -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h4 class="card-title fw-bold text-primary mb-4">Add New Student</h4>
+
+                    <form method="POST" action="{% url 'add_student' %}">
+                        {% csrf_token %}
+
+                        <!-- Admission Number -->
+                        <div class="mb-3">
+                            <label for="admission_no" class="form-label fw-semibold">Admission Number</label>
+                            <input type="text" name="admission_no" id="admission_no" class="form-control" placeholder="e.g., ADM-101" required>
+                        </div>
+
+                        <!-- First Name -->
+                        <div class="mb-3">
+                            <label for="first_name" class="form-label fw-semibold">First Name</label>
+                            <input type="text" name="first_name" id="first_name" class="form-control" placeholder="First Name" required>
+                        </div>
+
+                        <!-- Last Name -->
+                        <div class="mb-3">
+                            <label for="last_name" class="form-label fw-semibold">Last Name</label>
+                            <input type="text" name="last_name" id="last_name" class="form-control" placeholder="Last Name" required>
+                        </div>
+
+                        <!-- Class Dropdown -->
+                        <div class="mb-4">
+                            <label for="school_class" class="form-label fw-semibold">Class</label>
+                            <select name="school_class" id="school_class" class="form-select" required>
+                                <option value="" selected disabled>Select Class</option>
+                                {% for cls in classes %}
+                                    <option value="{{ cls.id }}">{{ cls.class_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                            Add Student
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
