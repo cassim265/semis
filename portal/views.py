@@ -190,7 +190,7 @@ def admin_matrix(request):
         ).select_related('student', 'subject')
 
         # Build lookup map: (student_id, subject_id) -> score
-        grade_map = {(g.student_id, g.subject_id): g.score for g in grades}
+        grade_map = {(g.student_id, g.subject_id): g.marks for g in grades}
 
         for student in students:
             subject_scores = []
