@@ -184,22 +184,22 @@
         <div class="offcanvas-body p-3">
             <ul class="nav flex-column gap-2">
                 <li class="nav-item">
-                    <a href="{% url 'admin_matrix' %}" class="nav-link text-white {% if request.resolver_match.url_name == 'admin_matrix' %}active bg-secondary{% endif %}">
+                    <a href="{% url 'teacher_dashboard' %}" class="nav-link text-white {% if request.resolver_match.url_name == 'admin_matrix' %}active bg-secondary{% endif %}">
                         <i class="bi bi-grid-1x2-fill me-2"></i> Dashboard
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{% url 'academic_setup' %}" class="nav-link text-white {% if request.resolver_match.url_name == 'academic_setup' %}active bg-secondary{% endif %}">
+                    <a href="{% url '' %}" class="nav-link text-white {% if request.resolver_match.url_name == 'academic_setup' %}active bg-secondary{% endif %}">
                         <i class="bi bi-calendar-check-fill me-2"></i> view allocation
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{% url 'add_student' %}" class="nav-link text-white {% if request.resolver_match.url_name == 'add_student' %}active bg-secondary{% endif %}">
+                    <a href="{% url '' %}" class="nav-link text-white {% if request.resolver_match.url_name == 'add_student' %}active bg-secondary{% endif %}">
                         <i class="bi bi-people-fill me-2"></i> view students
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{% url 'assign_teacher' %}" class="nav-link text-white {% if request.resolver_match.url_name == 'assign_teacher' %}active bg-secondary{% endif %}">
+                    <a href="{% url '' %}" class="nav-link text-white {% if request.resolver_match.url_name == 'assign_teacher' %}active bg-secondary{% endif %}">
                         <i class="bi bi-person-badge-fill me-2"></i> update password
                     </a>
                 </li>
