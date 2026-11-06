@@ -1,0 +1,263 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}School Management Portal{% endblock %}</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --sidebar-bg: #22303c;
+            --sidebar-color: #8899a6;
+            --sidebar-hover: #293845;
+            --sidebar-active-bg: #324454;
+            --sidebar-active-color: #ffffff;
+            --main-bg: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+        }
+
+        body {
+            background-color: var(--main-bg);
+            color: var(--text-main);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Desktop Sidebar */
+        .app-sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: #fff;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1040;
+        }
+
+        .app-sidebar .brand {
+            font-size: 1.25rem;
+            font-weight: 700;
+            padding: 24px 20px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .app-sidebar .nav-link {
+            color: var(--sidebar-color);
+            padding: 12px 20px;
+            margin: 4px 12px;
+            border-radius: 8px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .app-sidebar .nav-link:hover {
+            background-color: var(--sidebar-hover);
+            color: #fff;
+        }
+
+        .app-sidebar .nav-link.active {
+            background-color: var(--sidebar-active-bg);
+            color: var(--sidebar-active-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* Main Content Wrapper (Shifts right on desktop to clear sidebar) */
+        .app-wrapper {
+            margin-left: 260px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (max-width: 991.98px) {
+            .app-wrapper {
+                margin-left: 0;
+            }
+        }
+
+        /* Top Header */
+        .app-header {
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+        }
+
+        /* Modernized Cards */
+        .card {
+            border: none;
+            border-radius: 14px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            background-color: var(--card-bg);
+            transition: box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Forms & Inputs */
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            padding: 10px 14px;
+            font-size: 14px;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+        h1, h2, h3, h4, h5, h6, 
+        .card-title, 
+        .text-primary {
+            color: #22303c !important;
+            font-weight: 700 !important;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- 1. Desktop Fixed Sidebar -->
+    <nav class="app-sidebar d-none d-lg-block">
+        <div class="brand">
+            <i class="bi bi-mortarboard-fill text-info fs-4"></i> School Portal
+        </div>
+        <div class="p-3">
+            <ul class="nav flex-column gap-1">
+                <li class="nav-item">
+                    <a href="{% url 'admin_matrix' %}" class="nav-link {% if request.resolver_match.url_name == 'admin_matrix' %}active{% endif %}">
+                        <i class="bi bi-grid-1x2-fill"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'academic_setup' %}" class="nav-link {% if request.resolver_match.url_name == 'academic_setup' %}active{% endif %}">
+                        <i class="bi bi-calendar-check-fill"></i> Academic Setup
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'add_student' %}" class="nav-link {% if request.resolver_match.url_name == 'add_student' %}active{% endif %}">
+                        <i class="bi bi-people-fill"></i> Add Student
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'assign_teacher' %}" class="nav-link {% if request.resolver_match.url_name == 'assign_teacher' %}active{% endif %}">
+                        <i class="bi bi-person-badge-fill"></i> Assign Teacher
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'promote_students' %}" class="nav-link {% if request.resolver_match.url_name == 'promote_students' %}active{% endif %}">
+                        <i class="bi bi-arrow-up-right-square-fill"></i> Rollover
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 2. Mobile Offcanvas Sliding Menu Drawer -->
+    <div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="mobileSidebar" aria-labelledby="mobileSidebarLabel">
+        <div class="offcanvas-header border-bottom border-secondary">
+            <h5 class="offcanvas-title fw-bold" id="mobileSidebarLabel">
+                <i class="bi bi-mortarboard-fill text-info me-2"></i> School Portal
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body p-3">
+            <ul class="nav flex-column gap-2">
+                <li class="nav-item">
+                    <a href="{% url 'admin_matrix' %}" class="nav-link text-white {% if request.resolver_match.url_name == 'admin_matrix' %}active bg-secondary{% endif %}">
+                        <i class="bi bi-grid-1x2-fill me-2"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'academic_setup' %}" class="nav-link text-white {% if request.resolver_match.url_name == 'academic_setup' %}active bg-secondary{% endif %}">
+                        <i class="bi bi-calendar-check-fill me-2"></i> view allocation
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'add_student' %}" class="nav-link text-white {% if request.resolver_match.url_name == 'add_student' %}active bg-secondary{% endif %}">
+                        <i class="bi bi-people-fill me-2"></i> view students
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'assign_teacher' %}" class="nav-link text-white {% if request.resolver_match.url_name == 'assign_teacher' %}active bg-secondary{% endif %}">
+                        <i class="bi bi-person-badge-fill me-2"></i> update password
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    <!-- 3. App Main Layout Wrapper -->
+    <div class="app-wrapper">
+        
+        <!-- Sticky Top Header -->
+        <header class="app-header">
+            <div class="d-flex align-items-center gap-3">
+                <!-- Hamburger Button (Visible only on smartphones/tablets) -->
+                <button class="btn btn-outline-secondary d-lg-none px-2 py-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
+                    <i class="bi bi-list fs-5"></i>
+                </button>
+                <span class="fw-bold text-secondary d-none d-sm-inline">Administration Portal</span>
+            </div>
+
+            <!-- Isolated User Profile & Logout Box (Far Right) -->
+            <div class="d-flex align-items-center bg-light border rounded-pill px-3 py-1 shadow-sm">
+                <span class="small text-muted me-2 d-none d-sm-inline">
+                    User: <strong class="text-dark">{{ request.user.username }}</strong>
+                </span>
+                <form method="POST" action="{% url 'logout' %}" class="d-inline m-0">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3 py-1 fw-semibold">
+                        Logout
+                    </button>
+                </form>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="container-fluid p-3 p-md-4 flex-grow-1">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm mb-4" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% block content %}
+            {% endblock %}
+        </main>
+
+        <!-- Footer -->
+        <footer class="text-center text-muted py-3 bg-white border-top small mt-auto">
+            &copy; 2026 School Portal System. All rights reserved.
+        </footer>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
