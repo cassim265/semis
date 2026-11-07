@@ -199,7 +199,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{% url '' %}" class="nav-link text-white {% if request.resolver_match.url_name == 'assign_teacher' %}active bg-secondary{% endif %}">
+                    <a href="{% url 'update_password' %}" class="nav-link text-white {% if request.resolver_match.url_name == 'assign_teacher' %}active bg-secondary{% endif %}">
                         <i class="bi bi-person-badge-fill me-2"></i> update password
                     </a>
                 </li>
