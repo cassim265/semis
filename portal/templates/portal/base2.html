@@ -189,12 +189,12 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{% url '' %}" class="nav-link text-white {% if request.resolver_match.url_name == 'academic_setup' %}active bg-secondary{% endif %}">
+                    <a href="{% url 'view_allocation' %}" class="nav-link text-white {% if request.resolver_match.url_name == 'academic_setup' %}active bg-secondary{% endif %}">
                         <i class="bi bi-calendar-check-fill me-2"></i> view allocation
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{% url '' %}" class="nav-link text-white {% if request.resolver_match.url_name == 'add_student' %}active bg-secondary{% endif %}">
+                    <a href="{% url 'view_student' %}" class="nav-link text-white {% if request.resolver_match.url_name == 'add_student' %}active bg-secondary{% endif %}">
                         <i class="bi bi-people-fill me-2"></i> view students
                     </a>
                 </li>
